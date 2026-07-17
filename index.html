@@ -28,23 +28,19 @@
             z-index: -1;
         }
 
-        /* 漂浮動畫 */
+        /* 輕微漂浮動畫 */
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(8deg); }
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-25px) scale(1.03); }
         }
 
-        .floating-planet {
-            animation: float 8s ease-in-out infinite;
-            transition: transform 0.4s ease;
-        }
-
-        .floating-planet:hover {
-            transform: scale(1.08);
-        }
-
-        .floating-logo {
+        .floating-img {
             animation: float 6s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .floating-img:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -55,7 +51,7 @@
 
     <div class="max-w-2xl mx-auto min-h-screen flex flex-col relative z-10 px-4 sm:px-6 pb-12">
         <!-- Header -->
-        <header class="py-6 flex items-center justify-between sticky top-0 bg-[#02050F]/80 backdrop-blur-md z-50">
+        <header class="py-6 flex items-center justify-between sticky top-0 z-50">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-cyan-300 via-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/50">
                     <i class="fa-solid fa-satellite text-white text-xl sm:text-2xl"></i>
@@ -71,22 +67,12 @@
         <div id="main-content" class="flex-1 flex items-center justify-center py-8">
            
             <!-- 開始畫面 -->
-            <div id="start-screen" class="text-center w-full relative">
-                <!-- 漂浮星球背景 -->
-                <div class="absolute inset-0 pointer-events-none overflow-hidden">
-                    <img src="6b2e6c6a45e0f125efc121e8d126e492-removebg-preview.png" alt="紅色星球" 
-                         class="floating-planet absolute left-10 top-20 w-32 h-32 rounded-full shadow-2xl" style="animation-delay: 0s;">
-                    <img src="6619967e457b38150d1cbb99006c0c5b-removebg-preview.png" alt="橙色星球" 
-                         class="floating-planet absolute right-12 top-32 w-28 h-28 rounded-full shadow-2xl" style="animation-delay: 2s;">
-                    <img src="066645daf37ba8390a71f22c5b453229-removebg-preview.png" alt="藍色星球" 
-                         class="floating-planet absolute left-1/3 bottom-24 w-24 h-24 rounded-full shadow-2xl" style="animation-delay: 4s;">
-                </div>
-
-                <div class="mb-10 sm:mb-12 relative z-10">
-                    <!-- 可點擊的漂浮 Logo -->
+            <div id="start-screen" class="text-center w-full">
+                <div class="mb-10 sm:mb-12">
+                    <!-- 可點擊的漂浮圖片 -->
                     <a href="https://www.facebook.com/PolaKids" target="_blank" class="block mx-auto mb-8 w-64 sm:w-72 max-w-xs cursor-pointer">
                         <img src="Asset 1@2x.png" alt="宇宙圖示"
-                             class="floating-logo w-full h-auto rounded-3xl shadow-2xl">
+                             class="floating-img w-full h-auto rounded-3xl shadow-2xl">
                     </a>
                     <h2 class="text-4xl sm:text-5xl font-bold mb-4 tracking-wider">星際任務</h2>
                     <p class="text-lg sm:text-xl text-indigo-200 max-w-md mx-auto">
@@ -95,15 +81,126 @@
                 </div>
                
                 <button onclick="startQuiz()"
-                        class="group relative z-10 w-full sm:w-auto px-12 sm:px-16 py-6 bg-gradient-to-r from-indigo-500 to-purple-600 hover:brightness-110 text-white text-2xl font-semibold rounded-3xl shadow-2xl transition-all flex items-center justify-center gap-4 mx-auto">
+                        class="group w-full sm:w-auto px-12 sm:px-16 py-6 bg-gradient-to-r from-indigo-500 to-purple-600 hover:brightness-110 text-white text-2xl font-semibold rounded-3xl shadow-2xl transition-all flex items-center justify-center gap-4 mx-auto">
                     啟動任務
                     <i class="fa-solid fa-rocket group-active:-rotate-12 transition-transform"></i>
                 </button>
             </div>
 
-            <!-- 其他畫面（問卷、解析、結果）保持不變 -->
-            <!-- ... (您的問卷、explain-screen、result-screen 程式碼保持原樣) ... -->
+            <!-- 問卷畫面 -->
+            <div id="quiz-screen" class="hidden w-full max-w-lg">
+                <div class="mb-8 bg-white/10 backdrop-blur rounded-3xl p-5 sm:p-6">
+                    <div class="flex justify-between text-sm mb-2 text-indigo-200">
+                        <span id="progress-text">問題 1 / 3</span>
+                    </div>
+                    <div class="h-2 bg-white/20 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="h-full bg-gradient-to-r from-cyan-300 to-purple-400 transition-all"></div>
+                    </div>
+                </div>
 
+                <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/40">
+                    <h3 id="question-text" class="text-xl sm:text-2xl font-semibold text-gray-800 mb-6 leading-relaxed"></h3>
+                    <div id="options" class="space-y-4"></div>
+                    <div id="feedback" class="mt-6 hidden"></div>
+                </div>
+
+                <div class="flex justify-end mt-8">
+                    <button onclick="nextQuestion()" id="next-btn"
+                            class="hidden px-8 sm:px-10 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-3xl font-medium shadow-lg">
+                        下一題
+                    </button>
+                </div>
+            </div>
+
+            <!-- 答案解析畫面 -->
+            <div id="explain-screen" class="hidden w-full max-w-lg">
+                <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/40">
+                    <div class="text-center mb-8">
+                        <div id="answer-icon" class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl mb-6 text-4xl shadow-inner">🌟</div>
+                        <h2 id="answer-title" class="text-3xl font-bold text-gray-800">任務解析</h2>
+                    </div>
+
+                    <div class="bg-indigo-50 rounded-3xl p-6 mb-6">
+                        <p class="text-indigo-600 font-bold mb-3">正確答案</p>
+                        <p id="correct-answer" class="text-gray-800 text-lg leading-relaxed"></p>
+                    </div>
+
+                    <div class="bg-purple-50 rounded-3xl p-6">
+                        <p class="text-purple-600 font-bold mb-3">星際小知識</p>
+                        <p id="answer-explanation" class="text-gray-700 leading-relaxed"></p>
+                    </div>
+
+                    <button id="explain-next-btn" onclick="nextQuestionFromExplain()"
+                            class="mt-8 w-full py-5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-3xl font-semibold shadow-lg">
+                        下一個探索任務 🚀
+                    </button>
+                </div>
+            </div>
+
+            <!-- 結果畫面 -->
+            <div id="result-screen" class="hidden w-full">
+                <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-10 border border-white/40">
+                    <div class="text-center mb-8">
+                        <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl mb-6 shadow-inner text-4xl">
+                            🪐
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-bold text-gray-800">您的星際觀察</h2>
+                    </div>
+                   
+                    <div id="summary" class="prose text-gray-700 space-y-8 mb-10"></div>
+                   
+                    <!-- 圖像化總結 -->
+                    <div class="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 border border-indigo-100 rounded-3xl p-8">
+                        <h3 class="font-bold text-2xl mb-8 text-center text-gray-800 flex items-center justify-center gap-3">
+                            <span>🌠</span> 特殊兒童：為何溝通與學習如此困難？
+                        </h3>
+                       
+                        <div class="space-y-8">
+                            <div class="bg-white/80 backdrop-blur rounded-2xl p-6 flex gap-6 items-start group hover:scale-[1.02] transition-transform">
+                                <div class="w-14 h-14 bg-gradient-to-br from-orange-400 to-red-400 text-white rounded-2xl flex items-center justify-center text-4xl shadow-inner flex-shrink-0">🌊</div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-lg mb-1.5 text-orange-700">01 感官過載</div>
+                                    <p class="text-gray-600 text-sm leading-relaxed">外部環境對他們而言可能過於雜亂，導致大腦難以篩選重要訊息，造成社交時的「當機」或焦慮。</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-white/80 backdrop-blur rounded-2xl p-6 flex gap-6 items-start group hover:scale-[1.02] transition-transform">
+                                <div class="w-14 h-14 bg-gradient-to-br from-purple-400 to-violet-500 text-white rounded-2xl flex items-center justify-center text-4xl shadow-inner flex-shrink-0">🔮</div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-lg mb-1.5 text-purple-700">02 無法預測</div>
+                                    <p class="text-gray-600 text-sm leading-relaxed">人際交往充滿變數，無法預測他人的反應會帶來極大壓力，使他們傾向自我封閉。</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-white/80 backdrop-blur rounded-2xl p-6 flex gap-6 items-start group hover:scale-[1.02] transition-transform">
+                                <div class="w-14 h-14 bg-gradient-to-br from-rose-400 to-pink-500 text-white rounded-2xl flex items-center justify-center text-4xl shadow-inner flex-shrink-0">⚖️</div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-lg mb-1.5 text-rose-700">03 練習成本高</div>
+                                    <p class="text-gray-600 text-sm leading-relaxed">真人互動容易遭遇拒絕或挫折，缺乏耐心指導與反覆練習，很難建立溝通自信。</p>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <div class="mt-10 text-center bg-white/70 rounded-2xl p-6 border border-white">
+                            <p class="text-indigo-700 font-medium text-lg">
+                                他們需要一個<span class="font-bold">安全、穩定、可無限練習</span>的宇宙避風港
+                            </p>
+                        </div>
+                    </div>
+                   
+                    <div class="mt-12 flex flex-col sm:flex-row gap-4">
+                        <button onclick="subscribeYoutube()"
+                                class="flex-1 py-5 bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 text-white font-semibold rounded-3xl transition-all flex items-center justify-center gap-3 shadow-lg">
+                            <i class="fa-solid fa-bell"></i>
+                            訂閲我們
+                        </button>
+                        <button onclick="window.location.reload()"
+                                class="flex-1 py-5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-3xl">
+                            返回宇宙
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -147,8 +244,186 @@
             requestAnimationFrame(animate);
         }
 
-        // 其他 JavaScript 程式碼（questions, startQuiz, showQuestion 等）保持不變
-        // ... (請保留您原本的 questions 陣列與所有 function) ...
+        const questions = [
+            {
+                id: 1,
+                text: "請問「SEL（社會情緒學習）」的核心目標為何？",
+                type: "single",
+                options: [
+                    { text: "單純的心理諮商", value: "A" },
+                    { text: "提升情緒、人際與決策能力", value: "B" },
+                    { text: "專注提升學業成績", value: "C" }
+                ],
+                correct:"B",
+                explanation:"SEL（社會情緒學習）不只是處理情緒，而是培養孩子理解自己、管理情緒、建立人際關係，以及做出適當決策的能力。"
+            },
+            {
+                id: 2,
+                text: "在日常社交互動中，您認為特殊兒童最常面臨的困難是？",
+                type: "single",
+                options: [
+                    { text: "不知道如何開啟話題或適當回應", value: "A" },
+                    { text: "無法判斷對方的表情與情緒暗示", value: "B" },
+                    { text: "難以適應突發的人際互動變化", value: "C" },
+                ],
+                correct: "ALL",
+                answerText: "以上皆是",
+                explanation: `
+                    特殊兒童在社交互動中可能面臨多方面挑戰，例如不知道如何開啟對話、理解他人情緒暗示，或適應突發的人際變化。這些困難與社交理解、情緒調節及溝通能力相關，因此需要透過安全且可重複練習的情境，逐步建立社交能力。
+                `
+            },
+            {
+                id: 3,
+                text: "為什麼特殊教育重視「立即回饋」？",
+                type: "single",
+                options: [
+                    { text: "幫助學生知道自己的表現，逐步建立學習信心與成就感。", value: "A" },
+                    { text: "協助教師了解學生狀況，調整適合學生的教學方式。", value: "B" },
+                    { text: "讓學生在練習當下理解行為與結果的關聯，更容易修正與學習新的能力。", value: "C" },
+                    { text: "增加學生練習的機會，幫助學習成果延伸到日常生活。", value: "D" },
+                ],
+                correct: "ALL",
+                answerText: "以上皆是",
+                explanation: `
+                    在特殊教育中，立即回饋能在學習當下提供具體引導，幫助學生理解行為與結果，建立學習信心；同時協助教師掌握學生狀況並調整教學方式，透過反覆練習逐步培養溝通、情緒管理與社交能力。
+                `
+            }
+        ];
+
+        let currentStep = 0;
+        let answers = {};
+        let answered = {};
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            currentStep = 0;
+            answers = {};
+            answered = {};
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentStep];
+            document.getElementById('question-text').textContent = q.text;
+            document.getElementById('progress-text').textContent = `問題 ${currentStep + 1} / 3`;
+            document.getElementById('progress-bar').style.width = `${((currentStep + 1) / 3) * 100}%`;
+
+            const container = document.getElementById('options');
+            container.innerHTML = '';
+            document.getElementById('feedback').classList.add('hidden');
+
+            q.options.forEach(opt => {
+                const isSelected = answers[currentStep] === opt.value;
+                const isAnswered = answered[currentStep];
+                const div = document.createElement('div');
+                div.className = `p-5 sm:p-6 rounded-2xl border-2 transition-all text-gray-800 ${isSelected ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200 hover:border-indigo-400'}`;
+                if (isAnswered && !isSelected) div.classList.add('opacity-60');
+                div.innerHTML = `<label class="flex items-center gap-4 cursor-pointer"><input type="radio" name="q${currentStep}" ${isSelected?'checked':''} class="accent-indigo-600" ${isAnswered ? 'disabled' : ''}> <span class="text-base sm:text-lg">${opt.text}</span></label>`;
+                if (!isAnswered) div.onclick = () => selectAnswer(opt.value, div, q);
+                container.appendChild(div);
+            });
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.classList.toggle('hidden', !answered[currentStep]);
+            nextBtn.textContent = currentStep === 2 ? "查看任務報告" : "下一題";
+        }
+
+        function selectAnswer(value, element, q) {
+            if (answered[currentStep]) return;
+            answers[currentStep] = value;
+            answered[currentStep] = true;
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.classList.remove('hidden');
+            nextBtn.textContent = "確認答案";
+            nextBtn.onclick = function() {
+                showExplanation(q);
+            };
+        }
+
+        function showExplanation(q) {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('explain-screen').classList.remove('hidden');
+
+            const isCorrect = answers[currentStep] === q.correct;
+            const icon = document.getElementById('answer-icon');
+            const title = document.getElementById('answer-title');
+
+            if (currentStep === 0) {
+                if (isCorrect) {
+                    icon.innerHTML = `<img src="image-removebg-preview.png" class="w-12 h-12 object-contain">`;
+                    icon.className = "inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6 text-4xl";
+                    title.textContent = "答對了！";
+                } else {
+                    icon.innerHTML = `<img src="image-removebg-preview (1).png" class="w-12 h-12 object-contain">`;
+                    icon.className = "inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6 text-4xl";
+                    title.textContent = "答錯了！";
+                }
+            } else {
+                if (isCorrect) {
+                    icon.innerHTML = "🎉";
+                    title.textContent = "答對了！";
+                } else {
+                    icon.innerHTML = "🌱";
+                    title.textContent = "繼續探索！";
+                }
+            }
+
+            let correctText = q.correct === "ALL" ? q.answerText : q.options.find(option => option.value === q.correct).text;
+            document.getElementById('correct-answer').textContent = correctText;
+            document.getElementById('answer-explanation').textContent = q.explanation;
+
+            const explainBtn = document.getElementById('explain-next-btn');
+            if (currentStep === questions.length - 1) {
+                explainBtn.textContent = "查看探索結果 🌌";
+            } else {
+                explainBtn.textContent = "下一個探索任務 🚀";
+            }
+        }
+
+        function nextQuestion() {
+            if (currentStep < 2) {
+                currentStep++;
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function nextQuestionFromExplain() {
+            document.getElementById('explain-screen').classList.add('hidden');
+            if (currentStep < questions.length - 1) {
+                currentStep++;
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+           
+            let html = `
+                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-3xl p-8">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl flex items-center justify-center text-3xl shadow-inner">🧠</div>
+                        <div>
+                            <p class="font-medium text-indigo-600 text-sm tracking-widest">SEL 核心目標</p>
+                            <p class="text-2xl font-bold text-gray-800 leading-tight">提升情緒、人際與決策能力</p>
+                        </div>
+                    </div>
+                    <div class="h-1.5 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 rounded-full"></div>
+                </div>
+            `;
+            document.getElementById('summary').innerHTML = html;
+        }
+
+        function subscribeYoutube() {
+            window.open('https://www.youtube.com/@AISolly%E7%89%B9%E6%AE%8A%E6%95%99%E8%82%B2%E5%B0%8F%E5%A4%A5%E4%BC%B4', '_blank');
+        }
 
         window.onload = () => {
             resizeCanvas();
