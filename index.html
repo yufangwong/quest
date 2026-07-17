@@ -394,19 +394,8 @@
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
            
-            let html = `
-                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-3xl p-8">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl flex items-center justify-center text-3xl shadow-inner">🧠</div>
-                        <div>
-                            <p class="font-medium text-indigo-600 text-sm tracking-widest">SEL 核心目標</p>
-                            <p class="text-2xl font-bold text-gray-800 leading-tight">提升情緒、人際與決策能力</p>
-                        </div>
-                    </div>
-                    <div class="h-1.5 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 rounded-full"></div>
-                </div>
-            `;
-            document.getElementById('summary').innerHTML = html;
+            // SEL 核心目標區塊已移除
+            document.getElementById('summary').innerHTML = '';
         }
 
         function subscribeYoutube() {
