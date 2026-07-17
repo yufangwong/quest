@@ -93,13 +93,6 @@
                 <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/40">
                     <h3 id="question-text" class="text-xl sm:text-2xl font-semibold text-gray-800 mb-6 leading-relaxed"></h3>
                     <div id="options" class="space-y-4"></div>
-                    <div id="feedback" class="mt-6 hidden"></div>
-                </div>
-
-                <div class="flex justify-end mt-8">
-                    <button onclick="nextQuestion()" id="next-btn" class="hidden px-8 sm:px-10 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-3xl font-medium shadow-lg">
-                        下一題
-                    </button>
                 </div>
             </div>
 
@@ -172,10 +165,10 @@
                     </div>
                    
                     <div class="mt-12 flex flex-col sm:flex-row gap-4">
-                        <button onclick="subscribeYoutube()" class="flex-1 py-5 bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 text-white font-semibold rounded-3xl transition-all flex items-center justify-center gap-3 shadow-lg">
-                            <i class="fa-solid fa-bell"></i> 訂閲我們
+                        <button onclick="subscribeFacebook()" class="flex-1 py-5 bg-gradient-to-r from-[#1877F2] via-blue-600 to-blue-700 hover:brightness-110 text-white font-semibold rounded-3xl shadow-2xl shadow-blue-500/50 transition-all flex items-center justify-center gap-3">
+                            <i class="fa-brands fa-facebook-f text-xl"></i> 追蹤我們
                         </button>
-                        <button onclick="window.location.reload()" class="flex-1 py-5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-3xl">
+                        <button onclick="window.location.reload()" class="flex-1 py-5 bg-gradient-to-r from-slate-700 to-gray-800 hover:brightness-110 text-white font-semibold rounded-3xl shadow-2xl shadow-slate-500/50 transition-all">
                             返回宇宙
                         </button>
                     </div>
@@ -299,35 +292,34 @@
 
             const container = document.getElementById('options');
             container.innerHTML = '';
-            document.getElementById('feedback').classList.add('hidden');
 
             q.options.forEach(opt => {
                 const isSelected = answers[currentStep] === opt.value;
-                const isAnswered = answered[currentStep];
                 const div = document.createElement('div');
-                div.className = `p-5 sm:p-6 rounded-2xl border-2 transition-all text-gray-800 ${isSelected ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200 hover:border-indigo-400'}`;
-                if (isAnswered && !isSelected) div.classList.add('opacity-60');
-                div.innerHTML = `<label class="flex items-center gap-4 cursor-pointer"><input type="radio" name="q${currentStep}" ${isSelected?'checked':''} class="accent-indigo-600" ${isAnswered ? 'disabled' : ''}> <span class="text-base sm:text-lg">${opt.text}</span></label>`;
-                if (!isAnswered) div.onclick = () => selectAnswer(opt.value, div, q);
+                div.className = `p-5 sm:p-6 rounded-2xl border-2 transition-all text-gray-800 cursor-pointer ${
+                    isSelected ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200 hover:border-indigo-400'
+                }`;
+                
+                div.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="text-base sm:text-lg">${opt.text}</span>
+                    </div>
+                `;
+                
+                div.onclick = () => {
+                    selectAnswer(opt.value, q);
+                };
                 container.appendChild(div);
             });
-
-            const nextBtn = document.getElementById('next-btn');
-            nextBtn.classList.toggle('hidden', !answered[currentStep]);
-            nextBtn.textContent = currentStep === 2 ? "查看任務報告" : "下一題";
         }
 
-        function selectAnswer(value, element, q) {
+        function selectAnswer(value, q) {
             if (answered[currentStep]) return;
+            
             answers[currentStep] = value;
             answered[currentStep] = true;
 
-            const nextBtn = document.getElementById('next-btn');
-            nextBtn.classList.remove('hidden');
-            nextBtn.textContent = "確認答案";
-            nextBtn.onclick = function() {
-                showExplanation(q);
-            };
+            showExplanation(q);
         }
 
         function showExplanation(q) {
@@ -370,15 +362,6 @@
             }
         }
 
-        function nextQuestion() {
-            if (currentStep < 2) {
-                currentStep++;
-                showQuestion();
-            } else {
-                showResult();
-            }
-        }
-
         function nextQuestionFromExplain() {
             document.getElementById('explain-screen').classList.add('hidden');
             if (currentStep < questions.length - 1) {
@@ -393,13 +376,11 @@
         function showResult() {
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
-           
-            // SEL 核心目標區塊已移除
             document.getElementById('summary').innerHTML = '';
         }
 
-        function subscribeYoutube() {
-            window.open('https://www.youtube.com/@AISolly%E7%89%B9%E6%AE%8A%E6%95%99%E8%82%B2%E5%B0%8F%E5%A4%A5%E4%BC%B4', '_blank');
+        function subscribeFacebook() {
+            window.open('https://www.facebook.com/PolaKids', '_blank');
         }
 
         window.onload = () => {
