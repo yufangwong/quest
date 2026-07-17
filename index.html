@@ -69,7 +69,6 @@
             <!-- 開始畫面 -->
             <div id="start-screen" class="text-center w-full">
                 <div class="mb-10 sm:mb-12">
-                    <!-- 可點擊的漂浮圖片 -->
                     <a href="https://www.facebook.com/PolaKids" target="_blank" class="block mx-auto mb-8 w-64 sm:w-72 max-w-xs cursor-pointer">
                         <img src="Asset 1@2x.png" alt="宇宙圖示"
                              class="floating-img w-full h-auto rounded-3xl shadow-2xl">
@@ -127,7 +126,7 @@
 
                     <div class="bg-purple-50 rounded-3xl p-6">
                         <p class="text-purple-600 font-bold mb-3">星際小知識</p>
-                        <p id="answer-explanation" class="text-gray-700 leading-relaxed"></p>
+                        <div id="answer-explanation" class="text-gray-700 leading-relaxed space-y-4"></div>
                     </div>
 
                     <button id="explain-next-btn" onclick="nextQuestionFromExplain()"
@@ -269,7 +268,11 @@
                 correct: "ALL",
                 answerText: "以上皆是",
                 explanation: `
-                    特殊兒童在社交互動中可能面臨多方面挑戰，例如不知道如何開啟對話、理解他人情緒暗示，或適應突發的人際變化。這些困難與社交理解、情緒調節及溝通能力相關，因此需要透過安全且可重複練習的情境，逐步建立社交能力。
+                    <p>特殊兒童在社交互動中可能同時面臨多方面的挑戰。</p>
+                    <p>有些孩子可能不知道如何開始對話、延續話題或做出適當回應；<br>
+                       有些孩子可能較難理解他人的表情、語氣與情緒暗示；<br>
+                       也有些孩子面對突發的人際變化時，可能需要更多時間適應與調整。</p>
+                    <p>這些困難並非單一能力不足，而是與社交理解、情緒調節、溝通表達及情境判斷能力相關。因此，在特殊教育中，需要透過安全且可重複練習的情境，協助孩子逐步建立社交能力。</p>
                 `
             },
             {
@@ -372,7 +375,7 @@
 
             let correctText = q.correct === "ALL" ? q.answerText : q.options.find(option => option.value === q.correct).text;
             document.getElementById('correct-answer').textContent = correctText;
-            document.getElementById('answer-explanation').textContent = q.explanation;
+            document.getElementById('answer-explanation').innerHTML = q.explanation;
 
             const explainBtn = document.getElementById('explain-next-btn');
             if (currentStep === questions.length - 1) {
