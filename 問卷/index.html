@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宇宙 SEL 探索</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', system-ui, sans-serif;
+        }
+
+        .space-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #02050F;
+            z-index: -2;
+        }
+
+        canvas#stars-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+        }
+
+        /* 漂浮動畫 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(8deg); }
+        }
+
+        .floating-planet {
+            animation: float 8s ease-in-out infinite;
+            transition: transform 0.4s ease;
+        }
+
+        .floating-planet:hover {
+            transform: scale(1.08);
+        }
+
+        .floating-logo {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white relative">
+    <!-- 純星空背景 -->
+    <div class="space-bg"></div>
+    <canvas id="stars-canvas"></canvas>
+
+    <div class="max-w-2xl mx-auto min-h-screen flex flex-col relative z-10 px-4 sm:px-6 pb-12">
+        <!-- Header -->
+        <header class="py-6 flex items-center justify-between sticky top-0 bg-[#02050F]/80 backdrop-blur-md z-50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-cyan-300 via-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/50">
+                    <i class="fa-solid fa-satellite text-white text-xl sm:text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold tracking-wider">宇宙探索</h1>
+                    <p class="text-indigo-300 text-xs sm:text-sm">AI SOLLY</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要內容 -->
+        <div id="main-content" class="flex-1 flex items-center justify-center py-8">
+           
+            <!-- 開始畫面 -->
+            <div id="start-screen" class="text-center w-full relative">
+                <!-- 漂浮星球背景 -->
+                <div class="absolute inset-0 pointer-events-none overflow-hidden">
+                    <img src="6b2e6c6a45e0f125efc121e8d126e492-removebg-preview.png" alt="紅色星球" 
+                         class="floating-planet absolute left-10 top-20 w-32 h-32 rounded-full shadow-2xl" style="animation-delay: 0s;">
+                    <img src="6619967e457b38150d1cbb99006c0c5b-removebg-preview.png" alt="橙色星球" 
+                         class="floating-planet absolute right-12 top-32 w-28 h-28 rounded-full shadow-2xl" style="animation-delay: 2s;">
+                    <img src="066645daf37ba8390a71f22c5b453229-removebg-preview.png" alt="藍色星球" 
+                         class="floating-planet absolute left-1/3 bottom-24 w-24 h-24 rounded-full shadow-2xl" style="animation-delay: 4s;">
+                </div>
+
+                <div class="mb-10 sm:mb-12 relative z-10">
+                    <!-- 可點擊的漂浮 Logo -->
+                    <a href="https://www.facebook.com/PolaKids" target="_blank" class="block mx-auto mb-8 w-64 sm:w-72 max-w-xs cursor-pointer">
+                        <img src="Asset 1@2x.png" alt="宇宙圖示"
+                             class="floating-logo w-full h-auto rounded-3xl shadow-2xl">
+                    </a>
+                    <h2 class="text-4xl sm:text-5xl font-bold mb-4 tracking-wider">星際任務</h2>
+                    <p class="text-lg sm:text-xl text-indigo-200 max-w-md mx-auto">
+                        穿越銀河，探索宇宙的未知事物
+                    </p>
+                </div>
+               
+                <button onclick="startQuiz()"
+                        class="group relative z-10 w-full sm:w-auto px-12 sm:px-16 py-6 bg-gradient-to-r from-indigo-500 to-purple-600 hover:brightness-110 text-white text-2xl font-semibold rounded-3xl shadow-2xl transition-all flex items-center justify-center gap-4 mx-auto">
+                    啟動任務
+                    <i class="fa-solid fa-rocket group-active:-rotate-12 transition-transform"></i>
+                </button>
+            </div>
+
+            <!-- 其他畫面（問卷、解析、結果）保持不變 -->
+            <!-- ... (您的問卷、explain-screen、result-screen 程式碼保持原樣) ... -->
+
+        </div>
+    </div>
+
+    <script>
+        // Canvas 背景 - 純星空
+        const canvas = document.getElementById('stars-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.8 + 0.6;
+                this.opacity = Math.random() * 0.8 + 0.2;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initSpace() {
+            stars = [];
+            for (let i = 0; i < 400; i++) {
+                stars.push(new Star());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => star.draw());
+            requestAnimationFrame(animate);
+        }
+
+        // 其他 JavaScript 程式碼（questions, startQuiz, showQuestion 等）保持不變
+        // ... (請保留您原本的 questions 陣列與所有 function) ...
+
+        window.onload = () => {
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            initSpace();
+            animate();
+        };
+    </script>
+</body>
+</html>
